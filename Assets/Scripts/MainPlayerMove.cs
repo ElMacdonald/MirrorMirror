@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+//TODO CONVERT BITS OF CODE INTO FUNCTIONS
 public class MainPlayerMove : MonoBehaviour
 {
     public float speed;
@@ -20,6 +22,9 @@ public class MainPlayerMove : MonoBehaviour
 
     public PlayerControls controls;
     private Rigidbody2D rb;
+
+    private float ctrlDisableTimer;
+    public float ctrlDisableDelay;
     void Start()
     {
         player = transform;
@@ -33,7 +38,14 @@ public class MainPlayerMove : MonoBehaviour
     void Update()
     {
         animTimer += Time.deltaTime;
-        if(animTimer > animDelay)
+        ctrlDisableTimer += Time.deltaTime;
+
+        if (ctrlDisableTimer < ctrlDisableDelay)
+            controls.Disable();
+        else
+            controls.Enable();
+
+        if (animTimer > animDelay)
         {
             if (spriteIndex == 0)
             {
@@ -50,11 +62,12 @@ public class MainPlayerMove : MonoBehaviour
         {
             flipped = !flipped;
             player.position = player.position * -1;
+            ctrlDisableTimer = 0;
         }
 
 
         movement = controls.Player.Move.ReadValue<Vector2>();
-        if(flipped == false)
+        if (flipped == false)
             player.position += speed * Time.deltaTime * movement;
         else
             player.position += speed * Time.deltaTime * -movement;
@@ -64,9 +77,9 @@ public class MainPlayerMove : MonoBehaviour
         else
             spr.sprite = sprites[2 + spriteIndex];
 
-        if (movement.x < 0)
+        if ((movement.x < 0 && flipped == false) || (movement.x > 0 && flipped))
             spr.flipX = true;
-        else if (movement.x > 0)
+        else if ((movement.x > 0 && flipped == false) || (movement.x < 0 && flipped))
             spr.flipX = false;
 
 
