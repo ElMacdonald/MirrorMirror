@@ -1,29 +1,74 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MainPlayerMove : MonoBehaviour
 {
     public float speed;
-    private bool flipped;
+    public bool flipped;
     private Transform center;
     private Transform player;
 
-    private Vector2 movement;
+    private Vector3 movement;
     private float horizontal;
     private float vertical;
     private float animTimer;
     public float animDelay;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public Sprite[] sprites;
+    public SpriteRenderer spr;
+    public int spriteIndex;
+
+    public PlayerControls controls;
+    private Rigidbody2D rb;
     void Start()
     {
         player = transform;
         center = player.parent;
+        spr = GetComponent<SpriteRenderer>();
+        controls = new PlayerControls();
+        controls.Enable();
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         animTimer += Time.deltaTime;
+        if(animTimer > animDelay)
+        {
+            if (spriteIndex == 0)
+            {
+                spriteIndex = 1;
+            }
+            else
+            {
+                spriteIndex = 0;
+            }
+            animTimer = 0;
+        }
+
+        if (controls.Player.Mirror.WasPressedThisFrame())
+        {
+            flipped = !flipped;
+            player.position = player.position * -1;
+        }
+
+
+        movement = controls.Player.Move.ReadValue<Vector2>();
+        if(flipped == false)
+            player.position += speed * Time.deltaTime * movement;
+        else
+            player.position += speed * Time.deltaTime * -movement;
+
+        if (movement.x != 0 || movement.y != 0)
+            spr.sprite = sprites[spriteIndex];
+        else
+            spr.sprite = sprites[2 + spriteIndex];
+
+        if (movement.x < 0)
+            spr.flipX = true;
+        else if (movement.x > 0)
+            spr.flipX = false;
+
 
     }
 }
