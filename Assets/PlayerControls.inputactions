@@ -23,6 +23,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Pickup",
+                    "type": "Button",
+                    "id": "fa8fad82-b514-4875-abce-2900b30aacdf",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -144,6 +153,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Mirror",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c580880e-d124-4942-9ec1-8b444b0c608d",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pickup",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -4,6 +4,15 @@ using System.Collections;
 
 public class MainPlayerMove : MonoBehaviour
 {
+    public AudioClip doorOpen;
+    public AudioClip keyPick;
+
+    public bool hasKey = false;
+    public GameObject keyFollower;
+    public Sprite doorSprite;
+
+    public GameObject winText;
+
     public float speed;
     public bool flipped;
     private Transform player;
@@ -56,14 +65,14 @@ public class MainPlayerMove : MonoBehaviour
         else
             movement = Vector2.zero;
 
-        // Animation
+        //Animation
         if (animTimer > animDelay)
         {
             spriteIndex = (spriteIndex == 0) ? 1 : 0;
             animTimer = 0;
         }
 
-        // Mirror input (with delay)
+        //Mirror input (with delay)
         if (controls.Player.Mirror.WasPressedThisFrame() && ctrlDisableTimer >= ctrlDisableDelay && !isFlipping)
         {
             ctrlDisableTimer = 0;
@@ -80,7 +89,7 @@ public class MainPlayerMove : MonoBehaviour
             StartCoroutine(FlipWithDelay());
         }
 
-        // Sprite logic
+        //Sprite logic
         if (movement.x != 0 || movement.y != 0)
             spr.sprite = sprites[spriteIndex];
         else
@@ -90,6 +99,12 @@ public class MainPlayerMove : MonoBehaviour
             spr.flipX = true;
         else if ((movement.x > 0 && !flipped) || (movement.x < 0 && flipped))
             spr.flipX = false;
+
+
+        if (hasKey)
+            keyFollower.SetActive(true);
+        else
+            keyFollower.SetActive(false);
     }
 
     void FixedUpdate()
@@ -127,6 +142,28 @@ public class MainPlayerMove : MonoBehaviour
         {
             collision.gameObject.GetComponent<BoxBehavior>().explodeBox();
             Debug.Log(collision);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Debug.Log("WORKING!!!!!");
+        if(collision.gameObject.tag == "key" && controls.Player.Pickup.IsPressed())
+        {
+            Destroy(collision.gameObject);
+            AudioSource.PlayClipAtPoint(keyPick, transform.position, .7f);
+            hasKey = true;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "door" && hasKey && killTimer < killDelay)
+        {
+            hasKey = false;
+            winText.SetActive(true);
+            collision.gameObject.GetComponent<SpriteRenderer>().sprite = doorSprite;
+            AudioSource.PlayClipAtPoint(doorOpen, transform.position, .7f);
         }
     }
 }
