@@ -5,8 +5,10 @@ public class BoxBehavior : MonoBehaviour
     private CameraShaker cs;
 
     public GameObject debrisPrefab;   //prefab of debris (ParticleSystem or sprite chunks)
+    public GameObject currencyPrefab; //prefab of currency to spawn
     public int debrisCount = 10;      //how many pieces to spawn
     public float debrisForce = 5f;    //explosion force
+    public int currencyAmount = 5;
 
     public AudioClip breakSound;      //sound to play on destruction
     public float soundVolume = 1f;
@@ -49,6 +51,21 @@ public class BoxBehavior : MonoBehaviour
 
                 //Auto destroy debris after a short time
                 Destroy(debris, 5f);
+            }
+            for (int i = 0; i < currencyAmount; i++)
+            {
+                Instantiate(
+                    currencyPrefab,
+                    transform.position,
+                    Quaternion.identity
+                );
+                Rigidbody2D rb = debrisPrefab.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    Vector2 dir = Random.insideUnitCircle.normalized;
+                    rb.AddForce(dir * debrisForce, ForceMode2D.Impulse);
+                    rb.AddTorque(Random.Range(-200f, 200f));
+                }
             }
         }
 
