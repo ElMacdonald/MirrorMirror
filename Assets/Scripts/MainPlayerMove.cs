@@ -12,6 +12,7 @@ public class MainPlayerMove : MonoBehaviour
     public Sprite doorSprite;
 
     public GameObject winText;
+    public GameObject winButton;
 
     public float speed;
     public bool flipped;
@@ -128,6 +129,8 @@ public class MainPlayerMove : MonoBehaviour
         else if (levelX && levelY)
             player.position = -player.position;
 
+        //KillOverlappingBoxes();
+
         flipped = !flipped;
         
 
@@ -164,6 +167,26 @@ public class MainPlayerMove : MonoBehaviour
             winText.SetActive(true);
             collision.gameObject.GetComponent<SpriteRenderer>().sprite = doorSprite;
             AudioSource.PlayClipAtPoint(doorOpen, transform.position, .7f);
+            winButton.SetActive(true);
         }
     }
+
+    void KillOverlappingBoxes()
+    {
+        Collider2D[] hits = Physics2D.OverlapBoxAll(
+            rb.position,
+            rb.GetComponent<Collider2D>().bounds.size,
+            0f
+        );
+
+        foreach (Collider2D hit in hits)
+        {
+            if (hit.CompareTag("box"))
+            {
+                hit.GetComponent<BoxBehavior>()?.explodeBox();
+            }
+        }
+    }
+
 }
+

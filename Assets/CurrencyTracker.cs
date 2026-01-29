@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CurrencyTracker : MonoBehaviour
@@ -10,12 +11,38 @@ public class CurrencyTracker : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        // sets self to not be destroyed on scene load
+        DontDestroyOnLoad(this.gameObject);
+        if(currencyText == null)
+            currencyText = GameObject.Find("CurrencyText").GetComponent<TextMeshProUGUI>();
     }
 
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+
+    // Searches for text again when loading into scene
+    public void FindText()
+    {
+        currencyText = GameObject.Find("CurrencyText").GetComponent<TextMeshProUGUI>();
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindText();
+    }
     // Update is called once per frame
     void Update()
     {
-        currencyText.text = "$" + totalCurrency.ToString();
+        if(currencyText != null)
+            currencyText.text = "$" + totalCurrency.ToString();
     }
 }
