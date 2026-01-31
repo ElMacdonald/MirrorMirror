@@ -15,6 +15,7 @@ public class MainPlayerMove : MonoBehaviour
     public GameObject winButton;
 
     public float speed;
+    public float channelingSpeed;
     public bool flipped;
     private Transform player;
 
@@ -40,6 +41,7 @@ public class MainPlayerMove : MonoBehaviour
 
     public GameObject glassPanel;
     public GameObject target;
+    public GameObject createdTarget;
 
     private float killTimer;
     public float killDelay; //how long after tping you're able to kill stuff (.1f)
@@ -76,19 +78,22 @@ public class MainPlayerMove : MonoBehaviour
         //Mirror input (with delay)
         if (controls.Player.Mirror.WasPressedThisFrame() && ctrlDisableTimer >= ctrlDisableDelay && !isFlipping)
         {
-            ctrlDisableTimer = 0;
+            //ctrlDisableTimer = 0;
             if(levelX && !levelY)
             {
-                GameObject.Instantiate(target, new Vector3(player.position.x, -player.position.y, -1f), Quaternion.identity);
+                createdTarget = GameObject.Instantiate(target, new Vector3(player.position.x, -player.position.y, -1f), Quaternion.identity);
             }else if(levelY && !levelX)
             {
-                GameObject.Instantiate(target, new Vector3(-player.position.x, player.position.y, -1f), Quaternion.identity);
+                createdTarget = GameObject.Instantiate(target, new Vector3(-player.position.x, player.position.y, -1f), Quaternion.identity);
             }else if(levelY && levelX)
             {
-                GameObject.Instantiate(target, new Vector3(-player.position.x, -player.position.y, -1f), Quaternion.identity);
+                createdTarget = GameObject.Instantiate(target, new Vector3(-player.position.x, -player.position.y, -1f), Quaternion.identity);
             }
             StartCoroutine(FlipWithDelay());
         }
+        
+        if(createdTarget != null)
+            TargetMove();
 
         //Sprite logic
         if (movement.x != 0 || movement.y != 0)
@@ -108,12 +113,37 @@ public class MainPlayerMove : MonoBehaviour
             keyFollower.SetActive(false);
     }
 
+    void TargetMove()
+    {
+        if(levelX && !levelY)
+        {
+            createdTarget.transform.position = new Vector3(player.position.x, -player.position.y, -1f);
+        }else if(levelY && !levelX)
+        {
+            createdTarget.transform.position = new Vector3(-player.position.x, player.position.y, -1f);
+        }else if(levelY && levelX)
+        {
+            createdTarget.transform.position = new Vector3(-player.position.x, -player.position.y, -1f);
+        }
+    }
+
     void FixedUpdate()
     {
-        if (!flipped)
-            rb.MovePosition(rb.position + (Vector2)(movement * speed * Time.fixedDeltaTime));
+        if (!isFlipping)
+        {
+            if (!flipped)
+                rb.MovePosition(rb.position + (Vector2)(movement * speed * Time.fixedDeltaTime));
+            else
+                rb.MovePosition(rb.position - (Vector2)(movement * speed * Time.fixedDeltaTime));
+        }
         else
-            rb.MovePosition(rb.position - (Vector2)(movement * speed * Time.fixedDeltaTime));
+        {
+            if (!flipped)
+                rb.MovePosition(rb.position + (Vector2)(movement * channelingSpeed * Time.fixedDeltaTime));
+            else
+                rb.MovePosition(rb.position - (Vector2)(movement * channelingSpeed * Time.fixedDeltaTime));
+        }
+        
     }
 
     IEnumerator FlipWithDelay()
