@@ -29,8 +29,11 @@ public class MainPlayerMove : MonoBehaviour
 
     private PlayerControls controls;
     private Rigidbody2D rb;
+    
+    public GameObject tpEffectPrefab;
+    public GameObject diePrefab;
 
-    private float ctrlDisableTimer;
+    private float ctrlDisableTimer = 100f;
     public float ctrlDisableDelay;
 
     public bool levelX;
@@ -43,7 +46,7 @@ public class MainPlayerMove : MonoBehaviour
     public GameObject target;
     public GameObject createdTarget;
 
-    private float killTimer;
+    public float killTimer;
     public float killDelay; //how long after tping you're able to kill stuff (.1f)
 
     void Start()
@@ -55,6 +58,7 @@ public class MainPlayerMove : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         glassPanel = GameObject.Find("GlassPanel");
         glassPanel.SetActive(false);
+        keyFollower = GameObject.Find("FAKE KEY");
     }
 
     void Update()
@@ -78,6 +82,8 @@ public class MainPlayerMove : MonoBehaviour
         //Mirror input (with delay)
         if (controls.Player.Mirror.WasPressedThisFrame() && ctrlDisableTimer >= ctrlDisableDelay && !isFlipping)
         {
+            GameObject fxMade = Instantiate(tpEffectPrefab, player.position, Quaternion.identity);
+            fxMade.transform.parent = player.transform;
             //ctrlDisableTimer = 0;
             if(levelX && !levelY)
             {
@@ -178,6 +184,12 @@ public class MainPlayerMove : MonoBehaviour
         }
     }
 
+    public void Die()
+    {
+        Instantiate(diePrefab, transform.position, Quaternion.identity);
+        Destroy(this.gameObject);
+    }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("WORKING!!!!!");
@@ -216,6 +228,12 @@ public class MainPlayerMove : MonoBehaviour
                 hit.GetComponent<BoxBehavior>()?.explodeBox();
             }
         }
+    }
+
+    // Disables the controls when scene unloaded
+    private void OnDisable()
+    {
+        controls.Disable();
     }
 
 }

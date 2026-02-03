@@ -26,7 +26,7 @@ public class EnemyBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (detected)
+        if (detected && player != null)
         {
             transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
         }
@@ -60,6 +60,10 @@ public class EnemyBehavior : MonoBehaviour
     // ignores own colliders to check for line of sight to player
     public void lineOfSight()
     {
+        if(player == null){
+            detected = false;
+            return;
+        }
         Vector3 directionToPlayer = player.transform.position - transform.position;
 
         RaycastHit2D[] hits = Physics2D.RaycastAll(
@@ -81,4 +85,18 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            MainPlayerMove playerMove = collision.gameObject.GetComponent<MainPlayerMove>();
+            if (playerMove != null && playerMove.killTimer >= playerMove.killDelay)
+            {
+                playerMove.Die();
+                detected = false;
+                player = null;
+            }
+        }
+    }
 }

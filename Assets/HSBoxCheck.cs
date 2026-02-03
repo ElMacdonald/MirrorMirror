@@ -17,7 +17,8 @@ public class HSBoxCheck : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        txt.text = "Your Score: $" + ct.totalCurrency.ToString();
+        if(txt != null && ct != null)
+            txt.text = "Your Score: $" + ct.totalCurrency.ToString();
     }
 
     public void submitHS()

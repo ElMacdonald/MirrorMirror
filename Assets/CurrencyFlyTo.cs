@@ -39,7 +39,8 @@ public class CurrencyFlyTo : MonoBehaviour
         {
             Debug.Log("Picked up currency: " + val);
             CurrencyTracker ct = FindObjectOfType<CurrencyTracker>();
-            ct.totalCurrency += val;
+            if(ct != null)
+                ct.totalCurrency += val;
             Destroy(gameObject);
         }
     }

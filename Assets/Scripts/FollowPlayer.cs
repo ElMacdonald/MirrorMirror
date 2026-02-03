@@ -17,6 +17,10 @@ public class FollowPlayer : MonoBehaviour
     void Start()
     {
         baseOffset = offset;
+        if(target == null)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
     }
 
     void Update()
