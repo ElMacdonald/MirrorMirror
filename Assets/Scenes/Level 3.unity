@@ -4401,6 +4401,7 @@ MonoBehaviour:
   winText: {fileID: 2105341573}
   winButton: {fileID: 1296025243}
   speed: 4
+  channelingSpeed: 1
   flipped: 0
   animDelay: 0.4
   sprites:
@@ -4414,6 +4415,7 @@ MonoBehaviour:
   flipDelay: 1
   glassPanel: {fileID: 0}
   target: {fileID: 7881936662455204952, guid: 38381d916293c0a4a9830da74a55c00e, type: 3}
+  createdTarget: {fileID: 0}
   killDelay: 0.1
 --- !u!1 &849854570
 GameObject:

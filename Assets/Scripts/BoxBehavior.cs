@@ -12,6 +12,7 @@ public class BoxBehavior : MonoBehaviour
 
     public AudioClip breakSound;      //sound to play on destruction
     public float soundVolume = 1f;
+    public GameObject key;
 
     private void Start()
     {
@@ -20,6 +21,12 @@ public class BoxBehavior : MonoBehaviour
 
     public void explodeBox()
     {
+        if(key != null)
+        {
+            key.transform.parent = null;
+            key.SetActive(true);
+            key.transform.position = transform.position;
+        }
         //Screen shake
         cs.Shake(.3f, .3f);
 
