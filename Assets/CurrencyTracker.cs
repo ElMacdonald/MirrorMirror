@@ -14,7 +14,8 @@ public class CurrencyTracker : MonoBehaviour
         // sets self to not be destroyed on scene load
         DontDestroyOnLoad(this.gameObject);
         if(currencyText == null)
-            currencyText = GameObject.Find("CurrencyText").GetComponent<TextMeshProUGUI>();
+            if(GameObject.Find("CurrencyText") != null)
+                currencyText = GameObject.Find("CurrencyText").GetComponent<TextMeshProUGUI>();
     }
 
     void Awake()
@@ -32,7 +33,8 @@ public class CurrencyTracker : MonoBehaviour
     // Searches for text again when loading into scene
     public void FindText()
     {
-        currencyText = GameObject.Find("CurrencyText").GetComponent<TextMeshProUGUI>();
+        if(GameObject.Find("CurrencyText") != null)
+            currencyText = GameObject.Find("CurrencyText").GetComponent<TextMeshProUGUI>();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
