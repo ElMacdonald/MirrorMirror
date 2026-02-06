@@ -38,7 +38,7 @@ public class CurrencyFlyTo : MonoBehaviour
         if(other.gameObject.CompareTag("Player") && animDelayTimer > 0.4f)
         {
             Debug.Log("Picked up currency: " + val);
-            CurrencyTracker ct = FindObjectOfType<CurrencyTracker>();
+            CurrencyTracker ct = FindFirstObjectByType<CurrencyTracker>();
             if(ct != null)
                 ct.totalCurrency += val;
             Destroy(gameObject);

@@ -30,7 +30,7 @@ public class HighScoreManager : MonoBehaviour
 
     void Awake()
     {
-        currencyTracker = FindObjectOfType<CurrencyTracker>();
+        currencyTracker = FindFirstObjectByType<CurrencyTracker>();
         filePath = Path.Combine(Application.persistentDataPath, fileName);
 
         if (!File.Exists(filePath))

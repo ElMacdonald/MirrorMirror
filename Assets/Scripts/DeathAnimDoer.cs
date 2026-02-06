@@ -15,7 +15,7 @@ public class DeathAnimDoer : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         startSpriteTimer = 0f;
-        gOver = FindObjectOfType<GameOverScreen>();
+        gOver = FindFirstObjectByType<GameOverScreen>();
     }
 
     // Update is called once per frame
